@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ScriptX</title>
+  <style>
+    html, body, #editor {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
+  <script>
+    window.require = { paths: { vs: "vs" } };
+  </script>
+  <script src="vs/loader.js"></script>
+  <script src="vs/editor/editor.main.js"></script>
+</head>
+<body>
+  <div id="editor"></div>
+  <script>
+    monaco.languages.register({ id: "luau" });
+
+    monaco.languages.setMonarchTokensProvider("luau", {
+      keywords: [
+        "and","break","do","else","elseif","end","false","for",
+        "function","if","in","local","nil","not","or","repeat",
+        "return","then","true","until","while"
+      ],
+      robloxAPI: [
+        "Instance","workspace","game","CFrame","Vector3",
+        "UDim2","Color3","Enum"
+      ],
+      executor: [
+        "print","warn","error","debug","httprequest",
+        "getgenv","hookfunction"
+      ],
+      tokenizer: {
+        root: [
+          [/[a-zA-Z_]\w*/, {
+            cases: {
+              "@keywords": "keyword",
+              "@executor": "custom-exec",
+              "@robloxAPI": "type.identifier",
+              "@default": "identifier"
+            }
+          }],
+          [/\d+(\.\d+)?/, "number"],
+          [/".*?"/, "string"],
+          [/'[^']*'/, "string"],
+          [/--.*$/, "comment"],
+        ],
+      },
+    });
+
+    monaco.editor.defineTheme("macsTheme", {
+      base: "vs-dark",
+      inherit: true,
+      rules: [
+        { token: "keyword", foreground: "0000FF" },
+        { token: "type.identifier", foreground: "8000FF" },
+        { token: "custom-exec", foreground: "FF00FF", fontStyle: "bold" },
+        { token: "number", foreground: "FF8800" },
+        { token: "string", foreground: "00AA00" },
+        { token: "comment", foreground: "888888", fontStyle: "italic" },
+      ],
+    });
+
+    monaco.editor.create(document.getElementById("editor"), {
+      value: "-- ScriptX ready!\nprint(\"Hello Luau\")",
+      language: "luau",
+      theme: "macsTheme",
+      automaticLayout: true,
+    });
+  </script>
+</body>
+</html>
