@@ -1,0 +1,2 @@
+# ScriptX
+First commit!
